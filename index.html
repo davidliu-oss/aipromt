@@ -6,97 +6,123 @@
     <title>AI 繪圖 Prompt 生成器 (專屬版)</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f6;
             color: #333;
-            max-width: 900px;
+            max-width: 960px;
             margin: 0 auto;
             padding: 20px;
         }
+
         h1 {
             text-align: center;
             color: #2c3e50;
         }
+
         .container {
-            background: white;
+            background: #fff;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
             margin-bottom: 20px;
         }
+
         .form-group {
             display: flex;
             flex-direction: column;
         }
+
         label {
-            font-weight: bold;
+            font-weight: 700;
             margin-bottom: 8px;
             color: #34495e;
             font-size: 14px;
         }
+
         select,
-        input {
+        input,
+        textarea {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 14px;
+            box-sizing: border-box;
         }
+
+        .custom-input {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .hint {
+            margin: 8px 0 0;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
         .output-area {
             margin-top: 30px;
             border-top: 2px dashed #eee;
             padding-top: 20px;
         }
+
         textarea {
             width: 100%;
-            height: 120px;
-            padding: 15px;
+            min-height: 130px;
             border: 2px solid #3498db;
-            border-radius: 5px;
-            font-size: 16px;
             resize: vertical;
-            box-sizing: border-box;
             margin-top: 10px;
         }
+
         .btn-group {
             display: flex;
             gap: 10px;
             margin-top: 15px;
+            flex-wrap: wrap;
         }
+
         button {
             padding: 12px 20px;
             border: none;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
             transition: background 0.3s;
         }
+
         .btn-generate {
             background-color: #3498db;
-            color: white;
+            color: #fff;
             flex: 2;
         }
+
         .btn-generate:hover {
             background-color: #2980b9;
         }
+
         .btn-copy {
             background-color: #2ecc71;
-            color: white;
+            color: #fff;
             flex: 1;
         }
+
         .btn-copy:hover {
             background-color: #27ae60;
         }
+
         .btn-clear {
             background-color: #e74c3c;
-            color: white;
+            color: #fff;
             flex: 1;
         }
+
         .btn-clear:hover {
             background-color: #c0392b;
         }
@@ -119,7 +145,9 @@
                     <option value="3D render, octane render">3D 渲染</option>
                     <option value="pixel art">像素藝術</option>
                     <option value="flat illustration, vector art">Flat (扁平插畫)</option>
+                    <option value="custom">自行輸入</option>
                 </select>
+                <input type="text" id="styleCustom" class="custom-input" placeholder="例如：吉卜力風、電影感海報">
             </div>
 
             <div class="form-group">
@@ -128,7 +156,9 @@
                     <option value="">(不指定)</option>
                     <option value="man">男</option>
                     <option value="woman">女</option>
+                    <option value="custom">自行輸入</option>
                 </select>
+                <input type="text" id="genderCustom" class="custom-input" placeholder="例如：男孩、女性">
             </div>
 
             <div class="form-group">
@@ -140,7 +170,9 @@
                     <option value="middle-aged adult">中年</option>
                     <option value="older adult">中老年</option>
                     <option value="elderly">老年</option>
+                    <option value="custom">自行輸入</option>
                 </select>
+                <input type="text" id="ageCustom" class="custom-input" placeholder="例如：嬰兒、青少年">
             </div>
 
             <div class="form-group">
@@ -148,7 +180,9 @@
                 <select id="race">
                     <option value="Taiwanese" selected>台灣人</option>
                     <option value="Western">歐美人</option>
+                    <option value="custom">自行輸入</option>
                 </select>
+                <input type="text" id="raceCustom" class="custom-input" placeholder="例如：日本人、韓國人">
             </div>
 
             <div class="form-group">
@@ -158,7 +192,9 @@
                     <option value="slim body">苗條</option>
                     <option value="slightly chubby build">微胖</option>
                     <option value="overweight body">肥胖</option>
+                    <option value="custom">自行輸入</option>
                 </select>
+                <input type="text" id="bodyCustom" class="custom-input" placeholder="例如：健壯、高瘦">
             </div>
 
             <div class="form-group">
@@ -167,7 +203,9 @@
                     <option value="">(不指定)</option>
                     <option value="wearing a suit">西裝</option>
                     <option value="wearing a doctor's lab coat">醫師袍</option>
+                    <option value="custom">自行輸入</option>
                 </select>
+                <input type="text" id="clothingCustom" class="custom-input" placeholder="例如：白襯衫、休閒服">
             </div>
 
             <div class="form-group">
@@ -175,11 +213,15 @@
                 <select id="expression">
                     <option value="">(不指定)</option>
                     <option value="smiling">微笑</option>
+                    <option value="big smile, teeth visible">露齒笑</option>
+                    <option value="gentle smile, closed-mouth smile">不露齒笑</option>
                     <option value="crying loudly">大哭</option>
                     <option value="cold and serious expression">冷酷</option>
                     <option value="surprised expression">驚訝</option>
                     <option value="sorrowful expression">哀愁</option>
+                    <option value="custom">自行輸入</option>
                 </select>
+                <input type="text" id="expressionCustom" class="custom-input" placeholder="例如：挑眉、抿嘴笑">
             </div>
 
             <div class="form-group">
@@ -191,7 +233,9 @@
                     <option value="furious atmosphere">憤怒</option>
                     <option value="despairing atmosphere">絕望</option>
                     <option value="sad atmosphere">悲傷</option>
+                    <option value="custom">自行輸入</option>
                 </select>
+                <input type="text" id="atmosphereCustom" class="custom-input" placeholder="例如：緊張、溫馨">
             </div>
 
             <div class="form-group">
@@ -202,35 +246,51 @@
                     <option value="side lighting">側光</option>
                     <option value="backlighting">逆光</option>
                     <option value="top lighting">頂光</option>
+                    <option value="custom">自行輸入</option>
                 </select>
+                <input type="text" id="lightingCustom" class="custom-input" placeholder="例如：柔光、窗光">
             </div>
 
             <div class="form-group">
                 <label for="camera">🎥 鏡頭</label>
                 <select id="camera">
                     <option value="">(不指定)</option>
-                    <option value="medium shot, waist-up portrait, upper body clearly visible, face and torso in frame, not a close-up">半身</option>
+                    <option value="medium shot, waist-up portrait, upper body clearly visible, face and torso in frame, chest to head visible, not a close-up">半身</option>
                     <option value="full body shot, full-length portrait, entire body visible from head to toe">全身</option>
                     <option value="close-up on face, face fills most of the frame">特寫臉</option>
-                    <option value="custom">自行填寫</option>
+                    <option value="custom">自行輸入</option>
                 </select>
-                <input type="text" id="cameraCustom" placeholder="例如：側臉特寫、低角度拍攝" style="margin-top: 10px; display: none;">
+                <input type="text" id="cameraCustom" class="custom-input" placeholder="例如：側臉特寫、低角度拍攝">
             </div>
 
             <div class="form-group">
                 <label for="scene">🏥 場景</label>
                 <select id="scene">
                     <option value="clean simple background" selected>乾淨背景</option>
+                    <option value="solid color background">純色背景</option>
                     <option value="in a dental clinic">牙科診所</option>
                     <option value="in a traditional Chinese medicine clinic">中醫診所</option>
-                    <option value="custom">自行填寫</option>
+                    <option value="custom">自行輸入</option>
                 </select>
-                <input type="text" id="sceneCustom" placeholder="例如：醫院走廊、窗邊、診療椅旁" style="margin-top: 10px; display: none;">
+                <select id="sceneColor" class="custom-input">
+                    <option value="">純色背景顏色（不指定）</option>
+                    <option value="white">白色</option>
+                    <option value="black">黑色</option>
+                    <option value="gray">灰色</option>
+                    <option value="beige">米色</option>
+                    <option value="blue">藍色</option>
+                    <option value="green">綠色</option>
+                    <option value="pink">粉色</option>
+                    <option value="custom">自行輸入顏色</option>
+                </select>
+                <input type="text" id="sceneColorCustom" class="custom-input" placeholder="例如：奶油色、淺藍色">
+                <input type="text" id="sceneCustom" class="custom-input" placeholder="例如：醫院走廊、窗邊、診療椅旁">
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="grid-column: 1 / -1;">
                 <label for="custom">✏️ 其他描述（可填中文）</label>
-                <input type="text" id="custom" placeholder="例如：拿著牙刷、站在診療椅旁">
+                <input type="text" id="custom" placeholder="例如：拿著牙刷、站在診療椅旁、不要有任何文字">
+                <p class="hint">系統會固定加入「圖片中不要有任何文字、標誌、浮水印」限制，按下組合後也會自動複製。</p>
             </div>
         </div>
 
@@ -247,9 +307,119 @@
     </div>
 
     <script>
+        const styleDictionary = [
+            ["寫實攝影", "photorealistic, 8k resolution, highly detailed"],
+            ["寫實", "photorealistic"],
+            ["動漫風", "anime style"],
+            ["日本動漫風", "anime style, masterpiece"],
+            ["美式漫畫", "american comic style"],
+            ["水彩", "watercolor painting"],
+            ["油畫", "oil painting"],
+            ["3D渲染", "3D render, octane render"],
+            ["3D", "3D render"],
+            ["像素藝術", "pixel art"],
+            ["像素風", "pixel art"],
+            ["扁平插畫", "flat illustration, vector art"],
+            ["電影感", "cinematic lighting, cinematic look"],
+            ["海報風", "poster style"],
+            ["吉卜力風", "ghibli-inspired style"]
+        ];
+
+        const genderDictionary = [
+            ["男", "man"],
+            ["男生", "man"],
+            ["男人", "man"],
+            ["男孩", "boy"],
+            ["女", "woman"],
+            ["女生", "woman"],
+            ["女人", "woman"],
+            ["女孩", "girl"]
+        ];
+
+        const ageDictionary = [
+            ["兒童", "child"],
+            ["小孩", "child"],
+            ["嬰兒", "baby"],
+            ["幼兒", "toddler"],
+            ["青少年", "teenager"],
+            ["青年", "young adult"],
+            ["中年", "middle-aged adult"],
+            ["中老年", "older adult"],
+            ["老年", "elderly"],
+            ["老人", "elderly"]
+        ];
+
+        const raceDictionary = [
+            ["台灣人", "Taiwanese"],
+            ["歐美人", "Western"],
+            ["日本人", "Japanese"],
+            ["韓國人", "Korean"],
+            ["亞洲人", "Asian"],
+            ["白人", "Caucasian"],
+            ["黑人", "Black person"]
+        ];
+
+        const bodyDictionary = [
+            ["苗條", "slim body"],
+            ["勻稱", "average build"],
+            ["微胖", "slightly chubby build"],
+            ["肥胖", "overweight body"],
+            ["健壯", "athletic build"],
+            ["壯碩", "muscular build"],
+            ["高瘦", "tall and slim build"]
+        ];
+
+        const clothingDictionary = [
+            ["西裝", "wearing a suit"],
+            ["醫師袍", "wearing a doctor's lab coat"],
+            ["醫生袍", "wearing a doctor's lab coat"],
+            ["白袍", "wearing a lab coat"],
+            ["襯衫", "wearing a shirt"],
+            ["白襯衫", "wearing a white shirt"],
+            ["休閒服", "wearing casual clothes"],
+            ["制服", "wearing a uniform"],
+            ["口罩", "wearing a face mask"]
+        ];
+
+        const expressionDictionary = [
+            ["微笑", "smiling"],
+            ["露齒笑", "big smile, teeth visible"],
+            ["燦笑", "big smile, teeth visible"],
+            ["不露齒笑", "gentle smile, closed-mouth smile"],
+            ["抿嘴笑", "gentle smile, closed-mouth smile"],
+            ["大哭", "crying loudly"],
+            ["冷酷", "cold and serious expression"],
+            ["驚訝", "surprised expression"],
+            ["哀愁", "sorrowful expression"],
+            ["皺眉", "frowning"],
+            ["挑眉", "raised eyebrow expression"]
+        ];
+
+        const atmosphereDictionary = [
+            ["開心", "happy atmosphere"],
+            ["生氣", "angry mood"],
+            ["憤怒", "furious atmosphere"],
+            ["絕望", "despairing atmosphere"],
+            ["悲傷", "sad atmosphere"],
+            ["緊張", "tense atmosphere"],
+            ["溫馨", "warm atmosphere"],
+            ["平靜", "calm atmosphere"]
+        ];
+
+        const lightingDictionary = [
+            ["順光", "front lighting"],
+            ["斜射光", "diagonal lighting"],
+            ["側光", "side lighting"],
+            ["逆光", "backlighting"],
+            ["頂光", "top lighting"],
+            ["柔光", "soft lighting"],
+            ["窗光", "window light"],
+            ["自然光", "natural lighting"]
+        ];
+
         const cameraDictionary = [
-            ["半身", "medium shot, waist-up portrait, upper body clearly visible, face and torso in frame, not a close-up"],
-            ["上半身", "medium shot, waist-up portrait, upper body clearly visible, face and torso in frame, not a close-up"],
+            ["半身", "medium shot, waist-up portrait, upper body clearly visible, face and torso in frame, chest to head visible, not a close-up"],
+            ["上半身", "medium shot, waist-up portrait, upper body clearly visible, face and torso in frame, chest to head visible, not a close-up"],
             ["全身", "full body shot, full-length portrait, entire body visible from head to toe"],
             ["特寫臉", "close-up on face, face fills most of the frame"],
             ["臉部特寫", "close-up on face, face fills most of the frame"],
@@ -271,7 +441,6 @@
             ["微距", "macro shot"],
             ["廣角", "wide-angle shot"],
             ["淺景深", "shallow depth of field"],
-            ["景深", "depth of field"],
             ["人像", "portrait shot"]
         ];
 
@@ -279,6 +448,7 @@
             ["牙科診所", "in a dental clinic"],
             ["中醫診所", "in a traditional Chinese medicine clinic"],
             ["乾淨背景", "clean simple background"],
+            ["純色背景", "solid color background"],
             ["診所", "in a clinic"],
             ["醫院", "in a hospital"],
             ["病房", "in a hospital room"],
@@ -292,6 +462,25 @@
             ["背景", "background"]
         ];
 
+        const colorDictionary = [
+            ["白色", "white"],
+            ["黑色", "black"],
+            ["灰色", "gray"],
+            ["米色", "beige"],
+            ["藍色", "blue"],
+            ["綠色", "green"],
+            ["粉色", "pink"],
+            ["粉紅色", "pink"],
+            ["紅色", "red"],
+            ["黃色", "yellow"],
+            ["橘色", "orange"],
+            ["紫色", "purple"],
+            ["咖啡色", "brown"],
+            ["棕色", "brown"],
+            ["淺藍色", "light blue"],
+            ["奶油色", "cream"]
+        ];
+
         const customDictionary = [
             ["拿著", "holding"],
             ["手拿", "holding"],
@@ -302,7 +491,6 @@
             ["病人", "patient"],
             ["站著", "standing"],
             ["坐著", "sitting"],
-            ["微笑", "smiling"],
             ["看向鏡頭", "looking at the camera"],
             ["看著鏡頭", "looking at the camera"],
             ["看向前方", "looking forward"],
@@ -312,59 +500,183 @@
             ["旁邊", "beside"],
             ["附近", "near"],
             ["穿著", "wearing"],
-            ["白袍", "lab coat"],
-            ["西裝", "suit"],
             ["口罩", "face mask"],
             ["眼鏡", "glasses"],
             ["診療椅", "dental chair"],
             ["椅子", "chair"],
-            ["窗邊", "by the window"],
             ["背景虛化", "blurred background"],
-            ["淺景深", "shallow depth of field"]
+            ["淺景深", "shallow depth of field"],
+            ["不要有任何文字", "no text, no letters, no words"],
+            ["不要文字", "no text, no letters, no words"],
+            ["沒有文字", "no text, no letters, no words"],
+            ["無文字", "no text, no letters, no words"],
+            ["沒有標誌", "no logo"],
+            ["沒有logo", "no logo"],
+            ["沒有浮水印", "no watermark"]
         ];
 
-        document.getElementById("camera").addEventListener("change", toggleCameraCustomInput);
-        document.getElementById("scene").addEventListener("change", toggleSceneCustomInput);
+        const fieldConfig = {
+            style: styleDictionary,
+            gender: genderDictionary,
+            age: ageDictionary,
+            race: raceDictionary,
+            body: bodyDictionary,
+            clothing: clothingDictionary,
+            expression: expressionDictionary,
+            atmosphere: atmosphereDictionary,
+            lighting: lightingDictionary,
+            camera: cameraDictionary,
+            scene: sceneDictionary
+        };
 
-        function toggleCameraCustomInput() {
-            const cameraSelect = document.getElementById("camera");
-            const cameraCustomInput = document.getElementById("cameraCustom");
-            const isCustom = cameraSelect.value === "custom";
+        const defaultValues = {
+            style: "",
+            gender: "",
+            age: "",
+            race: "Taiwanese",
+            body: "average build",
+            clothing: "",
+            expression: "",
+            atmosphere: "",
+            lighting: "front lighting",
+            camera: "",
+            scene: "clean simple background"
+        };
 
-            cameraCustomInput.style.display = isCustom ? "block" : "none";
+        const permanentConstraints = "no text, no letters, no words, no typography, no captions, no subtitles, no watermark, no logo";
+
+        Object.keys(fieldConfig).forEach((fieldId) => {
+            const select = document.getElementById(fieldId);
+            select.addEventListener("change", () => toggleCustomInput(fieldId));
+            toggleCustomInput(fieldId);
+        });
+
+        document.getElementById("scene").addEventListener("change", toggleSceneColorInput);
+        document.getElementById("sceneColor").addEventListener("change", toggleSceneColorCustomInput);
+        toggleSceneColorInput();
+        toggleSceneColorCustomInput();
+
+        function toggleCustomInput(fieldId) {
+            const select = document.getElementById(fieldId);
+            const customInput = document.getElementById(`${fieldId}Custom`);
+
+            if (!customInput) {
+                return;
+            }
+
+            const isCustom = select.value === "custom";
+            customInput.style.display = isCustom ? "block" : "none";
 
             if (!isCustom) {
-                cameraCustomInput.value = "";
+                customInput.value = "";
             }
         }
 
-        function translateCustomCamera(text) {
+        function toggleSceneColorInput() {
+            const sceneValue = document.getElementById("scene").value;
+            const sceneColor = document.getElementById("sceneColor");
+            const showColor = sceneValue === "solid color background";
+
+            sceneColor.style.display = showColor ? "block" : "none";
+
+            if (!showColor) {
+                sceneColor.value = "";
+                document.getElementById("sceneColorCustom").value = "";
+                document.getElementById("sceneColorCustom").style.display = "none";
+            } else {
+                toggleSceneColorCustomInput();
+            }
+        }
+
+        function toggleSceneColorCustomInput() {
+            const sceneColor = document.getElementById("sceneColor");
+            const sceneColorCustom = document.getElementById("sceneColorCustom");
+            const showCustom = sceneColor.style.display !== "none" && sceneColor.value === "custom";
+
+            sceneColorCustom.style.display = showCustom ? "block" : "none";
+
+            if (!showCustom) {
+                sceneColorCustom.value = "";
+            }
+        }
+
+        function containsChinese(text) {
+            return /[\u4e00-\u9fff]/.test(text);
+        }
+
+        function normalizeText(text) {
+            return text
+                .replace(/[、，；]/g, ", ")
+                .replace(/與/g, " and ")
+                .replace(/和/g, " and ")
+                .replace(/拍攝/g, " shot")
+                .replace(/鏡頭/g, " shot")
+                .replace(/角度/g, " angle")
+                .replace(/風格/g, " style")
+                .replace(/光線/g, " lighting")
+                .replace(/旁/g, " side")
+                .replace(/內/g, " inside")
+                .replace(/外/g, " outside")
+                .replace(/\s+/g, " ")
+                .replace(/,\s*,/g, ", ")
+                .trim()
+                .replace(/^,\s*/, "")
+                .replace(/,\s*$/, "");
+        }
+
+        function translateByDictionary(text, dictionary) {
             const normalized = text.trim();
 
             if (normalized === "") {
                 return "";
             }
 
-            if (!/[\u4e00-\u9fff]/.test(normalized)) {
+            if (!containsChinese(normalized)) {
                 return normalized;
             }
 
             let translated = normalized;
-
-            cameraDictionary.forEach(([zh, en]) => {
+            dictionary.forEach(([zh, en]) => {
                 translated = translated.replaceAll(zh, en);
             });
 
-            translated = translated
-                .replace(/[、，]/g, ", ")
-                .replace(/拍攝/g, "shot")
-                .replace(/鏡頭/g, "shot")
-                .replace(/角度/g, "angle")
-                .replace(/\s+/g, " ")
-                .replace(/,\s*,/g, ",")
-                .trim();
+            return normalizeText(translated);
+        }
 
-            return translated;
+        function translateCustomText(text) {
+            const normalized = text.trim();
+
+            if (normalized === "") {
+                return "";
+            }
+
+            if (!containsChinese(normalized)) {
+                return normalized;
+            }
+
+            const dictionaries = [
+                styleDictionary,
+                genderDictionary,
+                ageDictionary,
+                raceDictionary,
+                bodyDictionary,
+                clothingDictionary,
+                expressionDictionary,
+                atmosphereDictionary,
+                lightingDictionary,
+                cameraDictionary,
+                sceneDictionary,
+                customDictionary
+            ];
+
+            let translated = normalized;
+            dictionaries.forEach((dictionary) => {
+                dictionary.forEach(([zh, en]) => {
+                    translated = translated.replaceAll(zh, en);
+                });
+            });
+
+            return normalizeText(translated);
         }
 
         function enforceCameraFraming(cameraText) {
@@ -389,112 +701,78 @@
             return cameraText;
         }
 
-        function toggleSceneCustomInput() {
-            const sceneSelect = document.getElementById("scene");
-            const sceneCustomInput = document.getElementById("sceneCustom");
-            const isCustom = sceneSelect.value === "custom";
+        function getFieldValue(fieldId) {
+            const select = document.getElementById(fieldId);
+            const customInput = document.getElementById(`${fieldId}Custom`);
+            const dictionary = fieldConfig[fieldId];
+            const value = select.value === "custom"
+                ? translateByDictionary(customInput.value, dictionary)
+                : select.value;
 
-            sceneCustomInput.style.display = isCustom ? "block" : "none";
+            if (fieldId === "camera") {
+                return enforceCameraFraming(value);
+            }
 
-            if (!isCustom) {
-                sceneCustomInput.value = "";
+            return value;
+        }
+
+        function getSceneValue() {
+            const sceneValue = getFieldValue("scene");
+
+            if (sceneValue !== "solid color background") {
+                return sceneValue;
+            }
+
+            const sceneColorValue = document.getElementById("sceneColor").value;
+
+            if (sceneColorValue === "") {
+                return "solid color background";
+            }
+
+            if (sceneColorValue === "custom") {
+                const customColor = translateByDictionary(document.getElementById("sceneColorCustom").value, colorDictionary);
+                return customColor ? `${customColor} solid color background` : "solid color background";
+            }
+
+            return `${sceneColorValue} solid color background`;
+        }
+
+        async function copyTextToClipboard(text) {
+            if (!text || !navigator.clipboard) {
+                return false;
+            }
+
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (error) {
+                return false;
             }
         }
 
-        function translateCustomScene(text) {
-            const normalized = text.trim();
-
-            if (normalized === "") {
-                return "";
-            }
-
-            if (!/[\u4e00-\u9fff]/.test(normalized)) {
-                return normalized;
-            }
-
-            let translated = normalized;
-
-            sceneDictionary.forEach(([zh, en]) => {
-                translated = translated.replaceAll(zh, en);
-            });
-
-            translated = translated
-                .replace(/[、，]/g, ", ")
-                .replace(/旁/g, "side")
-                .replace(/內/g, "inside")
-                .replace(/外/g, "outside")
-                .replace(/\s+/g, " ")
-                .replace(/,\s*,/g, ",")
-                .trim();
-
-            return translated;
-        }
-
-        function translateCustomText(text) {
-            const normalized = text.trim();
-
-            if (normalized === "") {
-                return "";
-            }
-
-            if (!/[\u4e00-\u9fff]/.test(normalized)) {
-                return normalized;
-            }
-
-            let translated = normalized;
-            const dictionaries = [cameraDictionary, sceneDictionary, customDictionary];
-
-            dictionaries.forEach((dictionary) => {
-                dictionary.forEach(([zh, en]) => {
-                    translated = translated.replaceAll(zh, en);
-                });
-            });
-
-            translated = translated
-                .replace(/[、，；]/g, ", ")
-                .replace(/與/g, " and ")
-                .replace(/和/g, " and ")
-                .replace(/在/g, "at ")
-                .replace(/內/g, "inside")
-                .replace(/外/g, "outside")
-                .replace(/\s+/g, " ")
-                .replace(/,\s*,/g, ",")
-                .trim();
-
-            return translated;
-        }
-
-        function generatePrompt() {
-            const cameraValue = document.getElementById("camera").value;
-            const finalCamera = cameraValue === "custom"
-                ? enforceCameraFraming(translateCustomCamera(document.getElementById("cameraCustom").value))
-                : enforceCameraFraming(cameraValue);
-            const sceneValue = document.getElementById("scene").value;
-            const finalScene = sceneValue === "custom"
-                ? translateCustomScene(document.getElementById("sceneCustom").value)
-                : sceneValue;
-            const finalCustom = translateCustomText(document.getElementById("custom").value);
-
+        async function generatePrompt() {
             const elements = [
-                document.getElementById("style").value,
-                finalCamera,
-                document.getElementById("age").value,
-                document.getElementById("race").value,
-                document.getElementById("gender").value,
-                document.getElementById("body").value,
-                document.getElementById("clothing").value,
-                document.getElementById("expression").value,
-                document.getElementById("atmosphere").value,
-                finalScene,
-                document.getElementById("lighting").value,
-                finalCustom
+                getFieldValue("style"),
+                getFieldValue("camera"),
+                getFieldValue("age"),
+                getFieldValue("race"),
+                getFieldValue("gender"),
+                getFieldValue("body"),
+                getFieldValue("clothing"),
+                getFieldValue("expression"),
+                getFieldValue("atmosphere"),
+                getSceneValue(),
+                getFieldValue("lighting"),
+                translateCustomText(document.getElementById("custom").value),
+                permanentConstraints
             ];
 
-            const finalPrompt = elements.filter((item) => item.trim() !== "").join(", ");
+            const finalPrompt = elements.filter((item) => item && item.trim() !== "").join(", ");
             document.getElementById("resultPrompt").value = finalPrompt;
+            await copyTextToClipboard(finalPrompt);
         }
 
-        function copyPrompt() {
+        async function copyPrompt() {
             const promptText = document.getElementById("resultPrompt");
 
             if (promptText.value === "") {
@@ -503,25 +781,30 @@
             }
 
             promptText.select();
-            navigator.clipboard.writeText(promptText.value).then(() => {
+            const copied = await copyTextToClipboard(promptText.value);
+
+            if (copied) {
                 alert("✅ 複製成功！");
-            });
+            }
         }
 
         function clearForm() {
-            document.querySelectorAll("select").forEach((select) => {
-                select.value = "";
+            Object.entries(defaultValues).forEach(([fieldId, defaultValue]) => {
+                document.getElementById(fieldId).value = defaultValue;
+                const customInput = document.getElementById(`${fieldId}Custom`);
+
+                if (customInput) {
+                    customInput.value = "";
+                }
+
+                toggleCustomInput(fieldId);
             });
-            document.getElementById("race").value = "Taiwanese";
-            document.getElementById("body").value = "average build";
-            document.getElementById("lighting").value = "front lighting";
-            document.getElementById("scene").value = "clean simple background";
+
+            document.getElementById("sceneColor").value = "";
+            document.getElementById("sceneColorCustom").value = "";
             document.getElementById("custom").value = "";
-            document.getElementById("cameraCustom").value = "";
-            document.getElementById("sceneCustom").value = "";
             document.getElementById("resultPrompt").value = "";
-            toggleCameraCustomInput();
-            toggleSceneCustomInput();
+            toggleSceneColorInput();
         }
     </script>
 </body>
